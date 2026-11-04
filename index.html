@@ -55,11 +55,24 @@
 
   <button onclick="startScanner()">📷 Uruchom kamerę</button>
   <button onclick="manualCode()">⌨ Wpisz kod</button>
-
+<button id="openSkladBtn"
+        style="display:none"
+        onclick="openSklad(lastCode)">
+  📦 Otwórz SKLAD
+</button>
   <script>
+  const SKLAD_URL =
+  'https://script.google.com/macros/s/AKfycbySCfVwUwcFhw1RLNv1yjr8j82dizZ3mF31Zd6PCN9TDKliEX_sUca9HOGNiik4I4Rs/exec';
+
+function openSklad(code) {
+  const url = SKLAD_URL + '?scan=' +
+    encodeURIComponent(code);
+
+  window.location.href = url;
+}  
     let scanner = null;
     let scanning = false;
-
+let lastCode = '';
     async function startScanner() {
       if (scanning) return;
 
@@ -86,19 +99,25 @@
     }
 
     async function onCodeScanned(code) {
-      if (!scanning) return;
-      scanning = false;
+  if (!scanning) return;
+  scanning = false;
 
-      await scanner.stop().catch(() => {});
+  lastCode = code;
+  document.getElementById('result').textContent =
+    'Zeskanowany kod: ' + code;
 
-      document.getElementById('result').textContent =
-        'Zeskanowany kod: ' + code;
-    }
+  document.getElementById('openSkladBtn').style.display =
+    'inline-block';
 
+  await scanner.stop().catch(() => {});
+}
     function manualCode() {
       const code = prompt('Wpisz kod produktu:');
       if (code && code.trim()) {
         document.getElementById('result').textContent =
+          lastCode = code.trim();
+document.getElementById('openSkladBtn').style.display =
+  'inline-block';
           'Wpisany kod: ' + code.trim();
       }
     }
