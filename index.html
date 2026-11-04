@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <title>SKLAD Scanner</title>
+
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f6fb;
+      color: #182b44;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 { color: #1757a7; }
+    #reader {
+      max-width: 480px;
+      margin: 20px auto;
+    }
+    button {
+      padding: 14px 20px;
+      margin: 8px;
+      border: none;
+      border-radius: 10px;
+      background: #1757a7;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #result {
+      margin: 20px auto;
+      padding: 16px;
+      background: white;
+      border-radius: 12px;
+      max-width: 480px;
+      overflow-wrap: anywhere;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>📦 SKLAD Scanner</h1>
+  <p>Skanuj kod QR lub kod kreskowy produktu</p>
+
+  <div id="reader"></div>
+
+  <div id="result">
+    Oczekiwanie na skanowanie...
+  </div>
+
+  <button onclick="startScanner()">📷 Uruchom kamerę</button>
+  <button onclick="manualCode()">⌨ Wpisz kod</button>
+
+  <script>
+    let scanner = null;
+    let scanning = false;
+
+    async function startScanner() {
+      if (scanning) return;
+
+      if (typeof Html5Qrcode === 'undefined') {
+        document.getElementById('result').textContent =
+          'Błąd ładowania biblioteki skanera';
+        return;
+      }
+
+      scanner = new Html5Qrcode('reader');
+
+      try {
+        await scanner.start(
+          { facingMode: 'environment' },
+          { fps: 10, qrbox: 250 },
+          onCodeScanned,
+          () => {}
+        );
+        scanning = true;
+      } catch (error) {
+        document.getElementById('result').textContent =
+          'Błąd kamery: ' + error;
+      }
+    }
+
+    async function onCodeScanned(code) {
+      if (!scanning) return;
+      scanning = false;
+
+      await scanner.stop().catch(() => {});
+
+      document.getElementById('result').textContent =
+        'Zeskanowany kod: ' + code;
+    }
+
+    function manualCode() {
+      const code = prompt('Wpisz kod produktu:');
+      if (code && code.trim()) {
+        document.getElementById('result').textContent =
+          'Wpisany kod: ' + code.trim();
+      }
+    }
+  </script>
+</body>
+</html>
