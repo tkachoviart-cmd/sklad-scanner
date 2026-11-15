@@ -68,6 +68,15 @@ function openSklad(code) {
   const params = new URLSearchParams(window.location.search);
 
   const assign = params.get('mode') === 'assign';
+  const productId = params.get('productId');
+
+if (assign && productId) {
+  window.location.href =
+    SKLAD_URL +
+    '?assignQr=' + encodeURIComponent(code) +
+    '&productId=' + encodeURIComponent(productId);
+  return;
+}
 
   const url = SKLAD_URL +
     (assign ? '?assignQr=' : '?scan=') +
