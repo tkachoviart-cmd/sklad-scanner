@@ -65,11 +65,16 @@
   'https://script.google.com/macros/s/AKfycbySCfVwUwcFhw1RLNv1yjr8j82dizZ3mF31Zd6PCN9TDKliEX_sUca9HOGNiik4I4Rs/exec';
 
 function openSklad(code) {
-  const url = SKLAD_URL + '?scan=' +
+  const params = new URLSearchParams(window.location.search);
+
+  const assign = params.get('mode') === 'assign';
+
+  const url = SKLAD_URL +
+    (assign ? '?assignQr=' : '?scan=') +
     encodeURIComponent(code);
 
   window.location.href = url;
-}  
+}
     let scanner = null;
     let scanning = false;
 let lastCode = '';
