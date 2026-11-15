@@ -79,8 +79,7 @@ if (assign && productId) {
 }
 
   const url = SKLAD_URL +
-    (assign ? '?assignQr=' : '?scan=') +
-    encodeURIComponent(code);
+  '?scan=' + encodeURIComponent(code);
 
   window.location.href = url;
 }
