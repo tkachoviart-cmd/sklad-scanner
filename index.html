@@ -115,6 +115,10 @@ let lastCode = '';
     'inline-block';
 
   await scanner.stop().catch(() => {});
+      if (new URLSearchParams(window.location.search).get('mode') === 'assign') {
+  openSklad(code);
+  return;
+}
 }
     function manualCode() {
       const code = prompt('Wpisz kod produktu:');
